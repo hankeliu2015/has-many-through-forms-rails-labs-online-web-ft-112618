@@ -1,1 +1,57 @@
+<h3>Show page</h3>
 
+<label for="">Post title:</label>
+<%= @post.title %>
+<br>
+
+<label for="">Post Content:</label>
+<%= @post.content %>
+
+<br>
+
+<label for="">Post Category:</label>
+<ul>
+  <% @post.categories.each do |category| %>
+  <li><%= category.name %></li>
+  <% end %>
+</ul>
+
+<label for="">Commented Users: </label>
+<ul>
+  <% @post.users.uniq.each do |user| %>
+  <li><%= link_to user.username, user_path(user) %></li>
+  <% end %>
+</ul>
+
+<br>
+
+<label for="">Post Comments:</label>
+<ul>
+  <% @post.comments.each do |comment| %>
+  
+  <li><%= "#{comment.user.username} says: #{comment.content}" %></li>
+  <% end %>
+</ul>
+
+<br>
+
+<%= form_for @comment do |f| %>
+
+  <%#= f.hidden_field :post_id %>
+  <%= f.hidden_field :post_id, :value => "#{@post.id}" %>
+  <%= f.label "new_comment_content" %>
+  <%= f.text_field :content %>
+  <%= f.collection_select :user_id, User.all, :id, :username, include_blank: "Select User" %>
+<br>
+  <%= f.fields_for :user, @comment.build_user do |user_fields|  %>
+    <%=user_fields.label :add_new_username%>
+    <%=user_fields.text_field :username %>
+    <%=user_fields.label :add_new_user_email%>
+    <%=user_fields.text_field :email %>
+
+  <% end %>
+
+<br>
+  <%=f.submit "Create Comment" %>
+<% end %>
+>
